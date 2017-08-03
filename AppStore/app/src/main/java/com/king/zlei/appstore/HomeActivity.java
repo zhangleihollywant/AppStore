@@ -1,11 +1,11 @@
 package com.king.zlei.appstore;
 
-import android.content.pm.ActivityInfo;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Window;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import java.lang.reflect.Field;
 
@@ -16,17 +16,39 @@ import java.lang.reflect.Field;
  */
 public class HomeActivity extends AppCompatActivity {
     private static final String TAG = "HomeActivity";
+    private ViewGroup barLayout;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//强制竖屏
-
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+//        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        super.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);//强制竖屏
         setContentView(R.layout.home_activity);
-        int status = getStatusBarHeight();
-        Log.d(TAG, "onCreate: "+status);
+        setStatus();
     }
+
+    //只有4.4版本以上才支持沉浸式状态栏
+    private void setStatus() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//判断版本号
+            //设置状态栏透明
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            //设置导航栏底部透明
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+            final int statusHeight = getStatusBarHeight();
+            barLayout = (ViewGroup) findViewById(R.id.appbar_layout);
+            barLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    int height = barLayout.getHeight();
+                    //高度设置为标题栏和状态栏之和
+                    ViewGroup.LayoutParams lp = barLayout.getLayoutParams();
+                    lp.height = statusHeight + height;
+                    barLayout.setLayoutParams(lp);
+                }
+            });
+        }
+    }
+
 
     //通过反射获取状态栏的高度
     public int getStatusBarHeight() {
