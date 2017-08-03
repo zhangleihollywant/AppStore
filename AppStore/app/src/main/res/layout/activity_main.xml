@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.king.zlei.appstore.MainActivity">
+
+    <ImageView android:layout_width="match_parent" android:layout_height="match_parent"
+               android:src="@drawable/splash_welcome_icon"/>
+    <Button
+        android:id="@+id/login_in_home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:text="进入首页"/>
+</FrameLayout>
